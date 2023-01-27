@@ -18,4 +18,9 @@ public class GameManager : MonoBehaviour
         player.OnRoundStart(handler.path[0]);
         roundActive = true;
     }
+
+    public void OnStartPosChosen(PathHandler handler, Vector2 pos)
+    {
+        player.transform.position = pos;
+    }
 }

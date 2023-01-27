@@ -21,6 +21,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     float lastShot;
 
+    public bool staticAim;
+    public int bulletCount;
+
     void Start()
     {
         manager = GameManager.gameManager;
@@ -51,16 +54,38 @@ public class Enemy : MonoBehaviour, IDamageable
 
     void Shoot()
     {
-        Bullet newBullet = Object.Instantiate(bulletPrefab, this.transform.position, Quaternion.identity, null).GetComponent<Bullet>();
-        Vector2 shootDir = player.transform.position - this.transform.position;
-        shootDir = shootDir.normalized * bulletSpeed;
-        newBullet.SetStats(1f, 0);
-        newBullet.Shoot(shootDir, this, new IDamageable.AlignmentMask(IDamageable.Alignment.Player));
+        if (staticAim)
+        {
+            ShootCircle(transform.up, bulletCount);
+        }
+        else {
+            Vector2 shootDir = player.transform.position - this.transform.position;
+            shootDir = shootDir.normalized;
+            ShootCircle(shootDir, bulletCount);
+        }
+    }
+
+    void ShootCircle(Vector2 upDir, int count)
+    {
+        upDir = upDir.normalized;
+        for(int i = 0; i< count; i++)
+        {
+            Quaternion rot = Quaternion.Euler(0,0, (360f / count) * i);
+            Vector2 shootDir = rot * upDir;
+            shootDir = shootDir * bulletSpeed;
+            Bullet newBullet = Object.Instantiate(bulletPrefab, this.transform.position, Quaternion.identity, null).GetComponent<Bullet>();
+            newBullet.SetStats(1f, 0);
+            newBullet.Shoot(shootDir, this, new IDamageable.AlignmentMask(IDamageable.Alignment.Player));
+        }
     }
 
     void FixedUpdate()
     {
-        if (manager.roundActive && Time.time > lastShot + shootDelay)
+        if (!manager.roundActive)
+        {
+            return;
+        }
+        if (Time.time > lastShot + shootDelay)
         {
             lastShot = Time.time;
             Shoot();

@@ -14,6 +14,7 @@ public class PathHandler : MonoBehaviour
     public GameObject exitObject;
     public bool useExitObject = false;
     public bool hasStartPos = false;
+    public float maxStartDist = 1f;
     public Vector2 startPos;
     public GameObject startObject;
     public bool useStartObject = false;
@@ -38,6 +39,7 @@ public class PathHandler : MonoBehaviour
                 startPos = new Vector2(startObject.transform.position.x, startObject.transform.position.y);
             }
             tempPath.Add(startPos);
+            manager.OnStartPosChosen(this, startPos);
         }
         lastPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         rend = gameObject.GetComponent<LineRenderer>();
@@ -50,7 +52,10 @@ public class PathHandler : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !pathReady)
         {
-            pathStarted = true;
+            if (!hasStartPos || Vector2.Distance(Camera.main.ScreenToWorldPoint(Input.mousePosition), startPos) < maxStartDist)
+            {
+                pathStarted = true;
+            }
         }
         if (pathStarted && !pathReady)
         {
@@ -66,7 +71,7 @@ public class PathHandler : MonoBehaviour
                     int i = 0;
                     foreach (Vector2 vec in tempPath)
                     {
-                        vecs[i] = vec;
+                        vecs[i] = new Vector3(vec.x, vec.y, -2);
                         i++;
                     }
                     rend.SetPositions(vecs);

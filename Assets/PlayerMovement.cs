@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour, IDamageable
         {
             while(Vector2.Distance(rb.position,targetPos) < movementLeft * Time.fixedDeltaTime)
             {
-                rb.position = targetPos;
+                transform.position = targetPos;
                 if (posId + 1 < handler.path.Length)
                 {
                     posId += 1;
