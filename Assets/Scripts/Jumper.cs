@@ -27,7 +27,7 @@ public class Jumper : MonoBehaviour
     private void Update()
     {
         ratio = Mathf.PingPong((Time.time + timingOffset) * jumpSpeed, 1f);
-        if (jumping && ratio < 0.05f)
+        if (jumping && ratio < 0.01f)
             reallyJumping = true;
 
         if (reallyJumping)
