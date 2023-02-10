@@ -57,6 +57,11 @@ public class GameManager : MonoBehaviour
             Debug.Log("Non-fatal error. Attempting to continue...");
     }
 
+    public GameState GetState()
+    {
+        return state;
+    }
+
     //////////////////////////////////////////////////
     // Private Fields and Methods //
     //////////////////////////////////////////////////
