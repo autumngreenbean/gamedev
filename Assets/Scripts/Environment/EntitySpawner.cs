@@ -7,13 +7,103 @@ using UnityEngine;
 /// </summary>
 public class EntitySpawner : MonoBehaviour
 {
-    // Defaults
-    public static EntityType defaultType = EntityType.Ant;
+    [SerializeField]
+    private List<EntitySpawn> timedSpawns = new List<EntitySpawn>();
 
-    [Header("Spawner Settings")]
-    public EntityType entityType = defaultType;
+    //////////////////////////////////////////////////
+    // Public Properties and Methods //
+    //////////////////////////////////////////////////
 
-    public Dictionary<float, EntitySpawn> timedSpawns = new Dictionary<float, EntitySpawn>();
+    public void Activate()
+    {
+        active = true;
+    }
+
+    public void Deactivate()
+    {
+        active = false;
+    }
+
+    public void Reset()
+    {
+        initialTimeInSeconds = Time.time;
+        elapsedTimeInSeconds = 0;
+
+        ResetSpawns();
+    }
+
+    //////////////////////////////////////////////////
+    // Private Fields and Methods //
+    //////////////////////////////////////////////////
+
+    // References
+    EntityLibrary library;
+
+    private List<EntitySpawn> remainingSpawns;
+
+    bool active = false; // Whether the spawner is active (enables timer)
+    float initialTimeInSeconds;
+    float elapsedTimeInSeconds;
+
+    private static EntityType defaultType = EntityType.Ant;
+
+    private void Start()
+    {
+        library = EntityLibrary.Instance;
+        initialTimeInSeconds = Time.time;
+
+        ResetSpawns();
+        Activate();
+    }
+
+    private void Update()
+    {
+        if (remainingSpawns.Count < 1)
+            Deactivate();
+
+        if (active)
+        {
+            elapsedTimeInSeconds = Time.time - initialTimeInSeconds;
+
+            for (int spawnIndex = remainingSpawns.Count - 1; spawnIndex >= 0; spawnIndex--) // Iterate from back so removals don't mess things up
+            {
+                EntitySpawn spawn = remainingSpawns[spawnIndex];
+
+                if (spawn.delayInSeconds < elapsedTimeInSeconds)
+                {
+                    for (int i = 0; i < spawn.quantity; i++)
+                    {
+                        SpawnEntity(spawn);
+                    }
+
+                    remainingSpawns.Remove(spawn);
+                }
+            }
+        }
+    }
+
+    private void SpawnEntity(EntitySpawn spawn)
+    {
+        GameObject entity = library.GetEntity(spawn.type);
+
+        entity.transform.position = GetSpawnPosition(spawn.positionRadius);
+    }
+
+    private Vector3 GetSpawnPosition(float offsetRadius)
+    {
+        // Get random offset
+        Vector2 spawnOffset = Random.insideUnitCircle * offsetRadius;
+
+        // Add offset to spawner position
+        Vector3 spawnPosition = transform.position + new Vector3(spawnOffset.x, 0f, spawnOffset.y);
+
+        return spawnPosition;
+    }
+
+    private void ResetSpawns()
+    {
+        remainingSpawns = timedSpawns;
+    }
 }
 
 /// <summary>
@@ -25,7 +115,8 @@ public class EntitySpawner : MonoBehaviour
 [System.Serializable]
 public class EntitySpawn
 {
-    public EntityType type;
+    public EntityType type = Globals.defaultEntityType;
     public int quantity = 1;
     public float delayInSeconds;
+    public float positionRadius;
 }

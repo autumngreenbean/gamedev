@@ -10,6 +10,6 @@ using UnityEngine;
 /// </remarks>
 public static class Globals
 {
-    // Example
-    public static Vector3 gameOriginPosition = Vector3.zero;
+    // Default entity for any purpose
+    public static EntityType defaultEntityType = EntityType.Ant;
 }
