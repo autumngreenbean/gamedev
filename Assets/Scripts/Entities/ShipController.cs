@@ -26,30 +26,25 @@ public class ShipController : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 localVelocity = transform.InverseTransformDirection(rigidBody.velocity);
-        // Vector3 localVelocity = rigidBody.velocity;
 
         if (localVelocity.z > 0f)
         {
-            rigidBody.AddRelativeTorque(
-                new Vector3(0f, horizontalInput * rotateSpeed * Time.deltaTime, 0f)
-            );
+            rigidBody.AddRelativeTorque(new Vector3(0f, horizontalInput * rotateSpeed, 0f));
         }
         else if (localVelocity.z < 0f)
         {
-            rigidBody.AddRelativeTorque(
-                new Vector3(0f, -horizontalInput * rotateSpeed * Time.deltaTime, 0f)
-            );
+            rigidBody.AddRelativeTorque(new Vector3(0f, -horizontalInput * rotateSpeed, 0f));
         }
 
         if (verticalInput > 0)
-            rigidBody.AddForce(transform.forward * verticalInput * forwardSpeed * Time.deltaTime);
+            rigidBody.AddForce(transform.forward * verticalInput * forwardSpeed);
         else
-            rigidBody.AddForce(transform.forward * verticalInput * backSpeed * Time.deltaTime);
+            rigidBody.AddForce(transform.forward * verticalInput * backSpeed);
     }
 }
