@@ -9,13 +9,17 @@ public enum GameState
     Initial,
     MainMenu,
     Settings,
-    Gameplay, // TODO: Break up when gameplay details determined
+    ShipControl,
+    Combat,
     Paused,
 }
 
 /// <summary>
 /// Controls high-level game logic.
 /// </summary>
+/// <remarks>
+/// One GameManager should be created in the first game scene. It will persist between scenes and no more should be created.
+/// </remarks>
 public class GameManager : MonoBehaviour
 {
     //////////////////////////////////////////////////
@@ -47,6 +51,12 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
+    /// <summary>
+    /// Called at game fail states. If a fatal error is detected, it will close the application.
+    /// </summary>
+    /// <remarks>
+    /// Fatal errors will not close the game in the Unity Editor.
+    /// </remarks>
     public void FailGame(bool fatal, String message)
     {
         Debug.Log(String.Format("Error: {0}\n", message));
@@ -85,7 +95,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        SetState(GameState.Gameplay);
+        SetState(GameState.ShipControl);
     }
 
     private void Update() { }
