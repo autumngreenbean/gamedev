@@ -1,0 +1,55 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody))]
+public class ShipController : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    [SerializeField]
+    private float forwardSpeed = 1f;
+
+    [SerializeField]
+    private float backSpeed = 1f;
+
+    [SerializeField]
+    private float rotateSpeed = 1f;
+
+    //////////////////////////////////////////////////
+    // Private Fields and Methods //
+    //////////////////////////////////////////////////
+
+    private Rigidbody rigidBody;
+
+    void Start()
+    {
+        rigidBody = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector3 localVelocity = transform.InverseTransformDirection(rigidBody.velocity);
+        // Vector3 localVelocity = rigidBody.velocity;
+
+        if (localVelocity.z > 0f)
+        {
+            rigidBody.AddRelativeTorque(
+                new Vector3(0f, horizontalInput * rotateSpeed * Time.deltaTime, 0f)
+            );
+        }
+        else if (localVelocity.z < 0f)
+        {
+            rigidBody.AddRelativeTorque(
+                new Vector3(0f, -horizontalInput * rotateSpeed * Time.deltaTime, 0f)
+            );
+        }
+
+        if (verticalInput > 0)
+            rigidBody.AddForce(transform.forward * verticalInput * forwardSpeed * Time.deltaTime);
+        else
+            rigidBody.AddForce(transform.forward * verticalInput * backSpeed * Time.deltaTime);
+    }
+}
