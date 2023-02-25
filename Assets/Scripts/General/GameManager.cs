@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     // Public Properties and Methods //
     //////////////////////////////////////////////////
 
-    public static GameManager Instance { get; set; } // Singleton class
+    public static GameManager Instance; // Singleton class
 
     public void PauseGame()
     {
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         if (Instance != null)
         {
             FailGame(true, "Multiple GameManagers detected.");
-            Destroy(gameObject);
+            Destroy(this);
         }
         else
         {
