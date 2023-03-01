@@ -65,7 +65,8 @@ public class EntitySpawner : MonoBehaviour
         {
             elapsedTimeInSeconds = Time.time - initialTimeInSeconds;
 
-            for (int spawnIndex = remainingSpawns.Count - 1; spawnIndex >= 0; spawnIndex--) // Iterate from back so removals don't mess things up
+            // Iterate from back so removals don't mess up indexing
+            for (int spawnIndex = remainingSpawns.Count - 1; spawnIndex >= 0; spawnIndex--)
             {
                 EntitySpawn spawn = remainingSpawns[spawnIndex];
 
